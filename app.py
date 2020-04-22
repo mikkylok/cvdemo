@@ -11,10 +11,11 @@ class App(object):
   def __init__(self):
       self.comment = {}
 
-  def logo_detect(self, option):
+  def logo_inspect(self, option):
       st.title(option)
       # upload image
-      upload_img = st.file_uploader("Choose an image file", type="jpg")
+      st.text("客户要求：\n1. 图片标准尺寸：500 * 322")
+      upload_img = st.file_uploader("Choose an image file(only jpg and png are supported)", type=["png", "jpg"])
       if upload_img is not None:
           st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
                    format='JPEG')
@@ -28,9 +29,9 @@ class App(object):
               bar.progress(i + 1)
               time.sleep(0.1)
           '''
-          self.comment["img_size"] = Common.detect_size(upload_img)
-          st.write("意见：%s" % Common.parse_comment(self.comment))
-          st.write("客户要求：xxxxx")
+          self.comment["img_size"] = Common.inspect_size(upload_img)
+          st.text("意见：%s\n" % Common.parse_comment(self.comment))
+
 
   def text_ocr(self, option):
       st.title(option)
@@ -44,7 +45,7 @@ if __name__=="__main__":
     option = st.sidebar.radio('', tuple(FUNC_MAP.keys()))
     # view，可以新增demo应用
     if FUNC_MAP[option] == 0:
-        app.logo_detect(option)
+        app.logo_inspect(option)
     elif FUNC_MAP[option] == 1:
         app.text_ocr(option)
 

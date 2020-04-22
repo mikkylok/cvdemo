@@ -6,7 +6,7 @@ class Common(object):
     pass
 
   @staticmethod
-  def detect_size(img):
+  def inspect_size(img):
     # 检测尺寸是否符合要求： 30*30
     #img = cv2.imread(img, 1)
     # 将图片从二进制流转换为矩阵
