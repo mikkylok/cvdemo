@@ -1,7 +1,4 @@
-import cv2
-import numpy as np
 from PIL import Image, ImageDraw
-from webcolors import rgb_to_hex
 # widgets
 class Common(object):
   def __init__(self):
