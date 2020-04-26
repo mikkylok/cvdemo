@@ -99,7 +99,7 @@ def get_main_colors(original_image):
         for color in colors:
             if color[1][3] != 0:
                 color_count_list.append(color[0])
-            elif color[1][3] == 0:
+            else:
                 transparent_pixel_no += color[0]
     color_count_list.sort(reverse=True)
     top_counts = color_count_list[:10]
