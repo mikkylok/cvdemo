@@ -88,8 +88,19 @@ def get_main_colors(original_image):
     #image = original_image.resize((80, 80))
     #colors = image.getcolors(80 * 80)  # array of colors in the image
     width, height = original_image.size
+    transparent_pixel_no = 0
     colors = original_image.getcolors(width * height)
-    color_count_list = [color[0] for color in colors]
+    # jpg通常为3通道，png为RGBA四通道+透明通道
+    mode = original_image.mode
+    if mode == "RGB":
+        color_count_list = [color[0] for color in colors]
+    elif mode == "RGBA":
+        color_count_list = []
+        for color in colors:
+            if color[1][3] != 0:
+                color_count_list.append(color[0])
+            elif color[1][3] == 0:
+                transparent_pixel_no += color[0]
     color_count_list.sort(reverse=True)
     top_counts = color_count_list[:10]
     top_colors = []
@@ -97,7 +108,7 @@ def get_main_colors(original_image):
         if color[0] in top_counts:
             top_colors.append(color)
     # get top ten colors
-    top_colors = [("%.2f%%" % (float(color[0]) * 100 / (width * height)), color[1]) for color in quick_sort(top_colors)[:10]]
+    top_colors = [("%.2f%%" % (float(color[0]) * 100 / (width * height - transparent_pixel_no)), color[1]) for color in quick_sort(top_colors)[:10]]
     return top_colors
 
 def quick_sort(b):
