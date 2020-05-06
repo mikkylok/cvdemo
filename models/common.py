@@ -67,8 +67,8 @@ class Common(object):
         '''
         # 内存中的字节数据 转换为opencv的图片矩阵
         img = cv2.imdecode(np.frombuffer(img.getvalue(), np.uint8), 1)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         # SIFT
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         detector = cv2.xfeatures2d.SIFT_create()
         keypoints = detector.detect(gray, None)
         cv2.drawKeypoints(gray, keypoints, img)
@@ -139,3 +139,56 @@ class Common(object):
                 right.append(item)
             # 使用迭代进行比较
         return Common.quick_sort(left) + [mid] + Common.quick_sort(right)
+
+    @staticmethod
+    def compare_detect(img):
+        # 载入标准图
+        #img1 = cv2.imread('/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_en_s.png')
+        img1 = cv2.imread('/data/User/lumeixi/pepsi_control_logo/pepsi_en_s.png')
+        # 内存中的字节数据 转换为opencv的图片矩阵
+        img2 = cv2.imdecode(np.frombuffer(img.getvalue(), np.uint8), 1)
+
+        kpimg1, kp1, des1 = Common.sift_kp(img1)
+        kpimg2, kp2, des2 = Common.sift_kp(img2)
+
+        goodMatch, cnt = Common.get_good_match(des1, des2, kp2)
+        # 得到并画出最小外接矩形
+        rect = cv2.minAreaRect(cnt)  # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
+        box = cv2.boxPoints(rect)  # 获取最小外接矩形的4个顶点坐标(ps: cv2.boxPoints(rect) for OpenCV 3.x)
+        box = np.int0(box)
+        # 画出来
+        cv2.drawContours(img2, [box], 0, (255, 238, 0), 2)
+        # 将标准图和测试图放在同一张图片中进行对比
+        all_goodmatch_img = cv2.drawMatches(img1, kp1, img2, kp2, goodMatch, None, flags=2)
+        return all_goodmatch_img
+
+    def sift_kp(image):
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        sift = cv2.xfeatures2d.SIFT_create()
+        kp, des = sift.detectAndCompute(image, None)
+        kp_image = cv2.drawKeypoints(gray_image, kp, None)
+        return kp_image, kp, des
+
+    def get_good_match(des1, des2, kp2):
+        bf = cv2.BFMatcher()
+        good = []
+        keypoints = []
+        # 用knnmatch 返回和原图
+        matches = bf.knnMatch(des1, des2, k=2)  # des1为模板图，des2为匹配图
+        # DMatch
+        # queryIdx：第一个图的特征点描述符的下标序号（第几个特征点描述符）
+        # trainIdx：第二个图的特征点描述符的下标
+        # distance：代表这怡翠匹配的特征点描述符的欧式距离，数值越小也就说明俩个特征点越相近。
+        # 按照第一个元素的distance和第二个元素的distance比值进行排序，和标准图匹配的两个特征点，距离不能太远
+        matches = sorted(matches, key=lambda x: x[0].distance / x[1].distance)
+        for m, n in matches:
+            if m.distance < 0.75 * n.distance:
+                # m为匹配的特征点，trainIdx为测试图特征描述点的index，kp2为测试图的特征点集，kp2[trainIdx]为测试图上的特征点，pt为获取坐标，返回值为tuple类型
+                # queryIdx为标准图特征描述点的index，kp1位标准图的特征点集，kp1[queryIdx]为标准图上的特征点
+                p = kp2[m.trainIdx].pt
+                p = np.array(p, dtype=float)
+                keypoints.append(p)
+                good.append(m)
+        keypoints = np.array(keypoints, dtype=np.float32)
+        return good, keypoints
+

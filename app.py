@@ -61,12 +61,27 @@ class App(object):
             st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
                      format='JPEG')
 
+    def compare_detect(self, option):
+        '''
+        对比特征检测
+        :param option:
+        :return:
+        '''
+        st.title(option)
+        # upload image
+        upload_img = st.file_uploader("Choose an image file(only jpg and png are supported)", type=["png", "jpg"])
+        if upload_img:
+            upload_img = Common.compare_detect(upload_img)
+            # show picture on the page
+            st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='BGR',
+                     format='JPEG')
 
 if __name__ == "__main__":
     FUNC_MAP = {
         "Logo合规性检测": 0,
         "主色调颜色检测": 1,
         "SIFT目标检测": 2,
+        "SIFT对比特征检测": 3,
     }
     app = App()
     option = st.sidebar.radio('', tuple(FUNC_MAP.keys()))
@@ -77,3 +92,5 @@ if __name__ == "__main__":
         app.color_detect(option)
     elif FUNC_MAP[option] == 2:
         app.object_detect(option)
+    elif FUNC_MAP[option] == 3:
+        app.compare_detect(option)
