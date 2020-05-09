@@ -21,7 +21,7 @@ class FontAnalysis():
         gray = cv2.cvtColor(cv_image, cv2.COLOR_RGB2GRAY)
 
         ret, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
-        contours, _ = cv2.findContours(thresh, 0, 1)
+        _,contours, _ = cv2.findContours(thresh, 0, 1)
 
         mu = [None] * len(contours)
         rect_area = [None] * len(contours)
