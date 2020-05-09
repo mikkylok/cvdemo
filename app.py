@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import time
 from models.common import Common
+from models.font import FontAnalysis
 
 
 # view
@@ -76,12 +77,45 @@ class App(object):
             st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='BGR',
                      format='JPEG')
 
+    def font_moment(self,option):
+        st.title(option)
+        upload_img = st.file_uploader("Choose an image file(only jpg and png are supported)", type=["png", "jpg","jpeg"])
+        if upload_img is not None:
+            # show original image
+            st.text("Original image:")
+            st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
+                     format='JPEG')
+            bound_img,center = FontAnalysis.moment(upload_img)
+            # show pallette
+            st.text("重心位置:"+str(center))
+            st.image(bound_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
+                     format='JPEG')
+
+    def font_weight(self,option):
+        st.title(option)
+        # upload image
+        upload_img = st.file_uploader("Choose an image file(only jpg and png are supported)", type=["png", "jpg","jpeg"])
+        if upload_img is not None:
+
+            st.text("Original image:")
+            st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
+                     format='JPEG')
+            mask,weight_ratio = FontAnalysis.weight(upload_img)
+
+            st.text("百分比:"+str(np.round(weight_ratio,4)))
+            st.image(mask, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
+                     format='JPEG')
+
+
+
 if __name__ == "__main__":
     FUNC_MAP = {
         "Logo合规性检测": 0,
         "主色调颜色检测": 1,
         "SIFT目标检测": 2,
         "SIFT对比特征检测": 3,
+        "字体重心计算":4,
+        "字体视觉重量分析": 5,
     }
     app = App()
     option = st.sidebar.radio('', tuple(FUNC_MAP.keys()))
@@ -94,3 +128,7 @@ if __name__ == "__main__":
         app.object_detect(option)
     elif FUNC_MAP[option] == 3:
         app.compare_detect(option)
+    elif FUNC_MAP[option] == 4:
+        app.font_moment(option)
+    elif FUNC_MAP[option] == 5:
+        app.font_weight(option)
