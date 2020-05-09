@@ -1,6 +1,8 @@
+import random
+
 import cv2
 import numpy as np
-import random
+
 
 class FontAnalysis():
     def __init__(self):
@@ -19,7 +21,7 @@ class FontAnalysis():
         gray = cv2.cvtColor(cv_image, cv2.COLOR_RGB2GRAY)
 
         ret, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
-        contours,_= cv2.findContours(thresh, 0,1)
+        contours, _ = cv2.findContours(thresh, 0, 1)
 
         mu = [None] * len(contours)
         rect_area = [None] * len(contours)
@@ -43,9 +45,9 @@ class FontAnalysis():
             color = (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
             cv2.drawContours(drawing, contours, i, color, 2)
             cv2.circle(drawing, (int(mc[i][0]), int(mc[i][1])), 3, color, -1)
-        # cv2.imwrite('draw.jpg',drawing)
+            mc[i] = (np.round(mc[i][0] / w, 4), np.round(mc[i][1] / h, 4))
 
-        return drawing,(mc[bigindex][0]/w,mc[bigindex][1]/h)
+        return drawing, mc
 
     @staticmethod
     def weight(img):
@@ -58,13 +60,13 @@ class FontAnalysis():
         :return:
         """
         cv_image = cv2.imdecode(np.frombuffer(img.getvalue(), np.uint8), 1)
-        h,w,_ = cv_image.shape
+        h, w, _ = cv_image.shape
         hsv = cv2.cvtColor(cv_image, cv2.COLOR_RGB2HSV)
         lower = np.array([0, 0, 0])
         upper = np.array([180, 255, 50])
 
         mask = cv2.inRange(hsv, lower, upper)
-        return mask,np.sum(mask/255)/w/h
+        return mask, np.sum(mask / 255) / w / h
 
 # image = cv2.imread('/Users/snowholy/Desktop/cvdemo/timg.jpeg')
 # ff = FontAnalysis()

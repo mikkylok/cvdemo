@@ -86,10 +86,12 @@ class App(object):
             st.image(upload_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
                      format='JPEG')
             bound_img,center = FontAnalysis.moment(upload_img)
-            # show pallette
-            st.text("重心位置:"+str(center))
+
+            st.text("轮廓图")
             st.image(bound_img, caption=None, width=None, use_column_width=False, clamp=False, channels='RGB',
                      format='JPEG')
+            for i in range(len(center)):
+                st.text("重心位置" + str(i) + ":" + str(center[i]))
 
     def font_weight(self,option):
         st.title(option)
