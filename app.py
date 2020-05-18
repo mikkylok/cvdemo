@@ -11,15 +11,14 @@ from models.common import Common
 from models.font import FontAnalysis
 from models.detect import EasyDetect
 
-'''
-"百事：英文/横": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_en_h.png",
-"百事：英文/竖": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_en_s.png",
-"百事：中文/横": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_cn_h.png",
-"百事：中文/竖": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_cn_s.png",
-"Puma": "/Users/tezign/Documents/puma1.jpg",
-"联合力华": "/Users/tezign/Documents/mikky/联合丽华sta.png",
-'''
+
 PEPSI_QUERY_PICS = {
+    #"百事：英文/横": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_en_h.png",
+    #"百事：英文/竖": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_en_s.png",
+    #"百事：中文/横": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_cn_h.png",
+    #"百事：中文/竖": "/Users/tezign/Documents/mikky/projects/百事/百事LOGO标准图/pepsi_cn_s.png",
+    #"Puma": "/Users/tezign/Documents/puma1.jpg",
+    #"联合力华": "/Users/tezign/Documents/mikky/联合丽华sta.png",
     "百事：英文/横": "/data/User/lumeixi/pepsi_logos/pepsi_en_h.png",
     "百事：英文/竖": "/data/User/lumeixi/pepsi_logos/pepsi_en_s.png",
     "百事：中文/横": "/data/User/lumeixi/pepsi_logos/pepsi_cn_h.png",
